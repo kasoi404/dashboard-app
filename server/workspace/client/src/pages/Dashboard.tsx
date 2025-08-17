@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography, Button, List, ListItem, ListItemText } from '@mui/material';
+import { Card, CardContent, Typography, Button, List, ListItem, ListItemText, Box } from '@mui/material';
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
 import api from '../api';
@@ -23,8 +23,8 @@ export default function Dashboard() {
 	] : [];
 	const colors = ['#1e88e5', '#90caf9', '#1565c0'];
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={12} md={6}>
+		<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+			<Box>
 				<Card>
 					<CardContent>
 						<Typography variant="h6">Overview</Typography>
@@ -32,7 +32,7 @@ export default function Dashboard() {
 							<ResponsiveContainer>
 								<PieChart>
 									<Pie dataKey="value" data={data} cx="50%" cy="50%" outerRadius={100} label>
-										{data.map((entry, index) => (
+										{data.map((_, index) => (
 											<Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
 										))}
 									</Pie>
@@ -42,8 +42,8 @@ export default function Dashboard() {
 						</div>
 					</CardContent>
 				</Card>
-			</Grid>
-			<Grid item xs={12} md={6}>
+			</Box>
+			<Box>
 				<Card>
 					<CardContent>
 						<Typography variant="h6">Low Stock</Typography>
@@ -58,7 +58,7 @@ export default function Dashboard() {
 						<Button sx={{ mt: 1 }} variant="contained" onClick={async () => { await api.post('/alerts/low-stock'); }}>Email notify</Button>
 					</CardContent>
 				</Card>
-			</Grid>
-		</Grid>
+			</Box>
+		</Box>
 	);
 }

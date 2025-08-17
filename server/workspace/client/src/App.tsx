@@ -11,8 +11,9 @@ import Users from './pages/Users';
 import Login from './pages/Login';
 import { SnackbarProvider } from 'notistack';
 import { CssBaseline } from '@mui/material';
+import type { ReactElement } from 'react';
 
-function PrivateRoute({ children }: { children: JSX.Element }) {
+function PrivateRoute({ children }: { children: ReactElement }) {
 	const token = localStorage.getItem('token');
 	return token ? children : <Navigate to="/login" replace />;
 }

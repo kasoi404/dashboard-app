@@ -1,7 +1,7 @@
 import { AppBar, Box, CssBaseline, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Sidebar } from './Sidebar';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import TopRightActions from '../components/TopRightActions';
 
 const drawerWidth = 240;

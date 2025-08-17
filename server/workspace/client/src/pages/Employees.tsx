@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Box, Button, TextField, Typography } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 import api from '../api';
 
 export default function Employees() {
@@ -21,32 +22,30 @@ export default function Employees() {
 	async function submit(e: React.FormEvent) {
 		e.preventDefault();
 		const fd = new FormData();
-		Object.entries(form).forEach(([k, v]) => { if (k === 'picture') { if (v) fd.append('picture', v); } else { fd.append(k, String(v ?? '')); } });
+		fd.append('employee_code', form.employee_code);
+		fd.append('name', form.name);
+		fd.append('position', form.position || '');
+		fd.append('email', form.email || '');
+		if (form.picture) fd.append('picture', form.picture);
 		await api.post('/employees', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
 		setForm({ employee_code: '', name: '', position: '', email: '', picture: null });
 		await load();
 	}
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={12}>
-				<Typography variant="h6">Employees</Typography>
-			</Grid>
-			<Grid item xs={12}>
-				<Box sx={{ height: 400, background: '#fff' }}>
-					<DataGrid rows={rows} columns={cols} disableRowSelectionOnClick />
-				</Box>
-			</Grid>
-			<Grid item xs={12}>
-				<Typography variant="subtitle1">Add Employee</Typography>
-				<Box component="form" onSubmit={submit} sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
-					<TextField size="small" label="Employee Code" value={form.employee_code} onChange={(e) => setForm({ ...form, employee_code: e.target.value })} required />
-					<TextField size="small" label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-					<TextField size="small" label="Position" value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} />
-					<TextField size="small" label="Employee Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-					<Button variant="outlined" component="label">Picture<input type="file" hidden onChange={(e) => setForm({ ...form, picture: e.target.files?.[0] || null })} /></Button>
-					<Button type="submit" variant="contained">Save</Button>
-				</Box>
-			</Grid>
-		</Grid>
+		<Box sx={{ display: 'grid', gap: 2 }}>
+			<Typography variant="h6">Employees</Typography>
+			<Box sx={{ height: 400, background: '#fff' }}>
+				<DataGrid rows={rows} columns={cols} disableRowSelectionOnClick />
+			</Box>
+			<Typography variant="subtitle1">Add Employee</Typography>
+			<Box component="form" onSubmit={submit} sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
+				<TextField size="small" label="Employee Code" value={form.employee_code} onChange={(e) => setForm({ ...form, employee_code: e.target.value })} required />
+				<TextField size="small" label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+				<TextField size="small" label="Position" value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} />
+				<TextField size="small" label="Employee Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+				<Button variant="outlined" component="label">Picture<input type="file" hidden onChange={(e) => setForm({ ...form, picture: e.target.files?.[0] || null })} /></Button>
+				<Button type="submit" variant="contained">Save</Button>
+			</Box>
+		</Box>
 	);
 }
